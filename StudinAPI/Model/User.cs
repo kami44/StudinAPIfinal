@@ -8,7 +8,7 @@ namespace StudinAPI.Model
     public class User
     {
         private int _id;
-        private string _scannerkey;
+        private int _scannerkey;
         private string _username;
         private string _password;
         private string _salt;
@@ -18,7 +18,7 @@ namespace StudinAPI.Model
         private int _phone;
         private int _accesslevel;
 
-        public User(int id, string scannerkey, string username, string password, string salt, string firstname, string lastname, string email, int phone, int accesslevel)
+        public User(int id, int scannerkey, string username, string password, string salt, string firstname, string lastname, string email, int phone, int accesslevel)
         {
             Id = id;
             Scannerkey = scannerkey;
@@ -39,7 +39,7 @@ namespace StudinAPI.Model
             set { _id = value; }
         }
 
-        public string Scannerkey
+        public int Scannerkey
         {
             get { return _scannerkey; }
             set { _scannerkey = value; }
