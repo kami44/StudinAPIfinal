@@ -10,13 +10,15 @@ namespace StudinAPI.Model
         private int _id;
         private int _fkusers;
         private int _fklessons;
+        private bool _checkedout;
 
 
-        public UserLesson(int id, int fkusers, int fklessons)
+        public UserLesson(int id, int fkusers, int fklessons, bool checkedout)
         {
             Id = id;
             Fkusers = fkusers;
             Fklessons = fklessons;
+            Checkedout = checkedout;
         }
 
         public UserLesson() { }
@@ -38,5 +40,13 @@ namespace StudinAPI.Model
             get { return _fklessons; }
             set { _fklessons = value; }
         }
+
+        public bool Checkedout
+        {
+            get { return _checkedout; }
+            set { _checkedout = value; }
+        }
+
+
     }
 }

@@ -24,5 +24,7 @@ namespace StudinAPI.Model
         public DbSet<UserCourse> UserCourse { get; set; }
 
         public DbSet<UserLesson> UserLesson { get; set; }
+
+        public DbSet<Checkin> Checkin { get; set; }
     }
 }
