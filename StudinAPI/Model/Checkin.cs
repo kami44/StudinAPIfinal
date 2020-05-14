@@ -11,13 +11,15 @@ namespace StudinAPI.Model
         private int _scannerkey;
         private int _classroom;
         private DateTime _checkinTime;
+        private bool _checkingIn;
 
-        public Checkin(int id, int scannerkey, int classroom, DateTime checkinTime)
+        public Checkin(int id, int scannerkey, int classroom, DateTime checkinTime, bool checkingIn)
         {
             _id = id;
             _scannerkey = scannerkey;
             _classroom = classroom;
             _checkinTime = checkinTime;
+            _checkingIn = checkingIn;
         }
         public Checkin() { }
 
@@ -37,10 +39,16 @@ namespace StudinAPI.Model
             get { return _classroom; }
             set { _classroom = value; }
         }
-        public DateTime CheckinTime
+        //public DateTime CheckinTime
+        //{
+        //    get { return _checkinTime; }
+        //    set { _checkinTime = value; }
+        //}
+
+        public bool CheckingIn
         {
-            get { return _checkinTime; }
-            set { _checkinTime = value; }
+            get { return _checkingIn; }
+            set { _checkingIn = value; }
         }
     }
 }

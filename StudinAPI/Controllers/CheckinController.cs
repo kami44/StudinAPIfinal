@@ -79,10 +79,56 @@ namespace StudinAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Checkin>> PostCheckin(Checkin checkin)
         {
-            _context.Checkin.Add(checkin);
-            await _context.SaveChangesAsync();
+            //Checking In
+            if (checkin.CheckingIn)
+            {
+                var student = _context.User.FromSqlRaw<User>("SELECT * FROM User WHERE Scannerkey = '"+checkin.Scannerkey+"'");
+                User flamingo = new User(11,11,student.ToString(),"","","","","",11,11);
 
-            return CreatedAtAction("GetCheckin", new { id = checkin.Id }, checkin);
+
+                if (student != null)
+                {
+                    _context.User.Add(flamingo);
+                    _context.Checkin.Add(checkin);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetCheckin", new { id = checkin.Id }, checkin);
+
+                    //var lesson = _context.Lesson.FromSqlRaw<Lesson>("SELECT l.Id AS lessonid, l.Lessonstart AS lessonstarttime, c.Id AS courseid " +
+                    //    "FROM Lesson l " +
+                    //    "INNER JOIN Course c "+
+                    //    "ON l.Fkcourses = c.Id "+
+                    //    "INNER JOIN Usercourse u "+
+                    //    "ON c.Id = u.Fkcourses "+
+                    //    "WHERE u.Fkusers = '&student.id'"+
+                    //    "AND l.Fkclassrooms = '&checkin.Classroom'"+
+                    //    "");
+                }
+                else
+                {
+
+                    return CreatedAtAction("GetCheckin", new { id = checkin.Id }, null);
+                }
+            }
+            //Checking Out
+            else
+            {
+
+                return CreatedAtAction("GetCheckin", new { id = checkin.Id }, null);
+            }
+
+
+
+
+
+
+
+
+
+            
+
+
+
         }
 
         // DELETE: api/Checkin/5
