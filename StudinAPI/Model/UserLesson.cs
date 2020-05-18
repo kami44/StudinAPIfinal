@@ -13,9 +13,10 @@ namespace StudinAPI.Model
         private int _fklessons;
         private bool _checkedout;
         private int? _minutesStayed;
+        private int? _minutesLate;
         private static int idcounter = 1;
 
-
+        //checking out
         public UserLesson( int fkusers, int fklessons, bool checkedout)
         {
             Id = idcounter;
@@ -24,7 +25,21 @@ namespace StudinAPI.Model
             Fklessons = fklessons;
             Checkedout = checkedout;
             MinutesStayed = null;
+            MinutesLate = null;
+  
         }
+        //checking in
+        public UserLesson(int fkusers, int fklessons, int? minutesLate)
+        {
+            Id = idcounter;
+            idcounter++;
+            Fkusers = fkusers;
+            Fklessons = fklessons;
+            Checkedout = false;
+            MinutesStayed = null;
+            MinutesLate = minutesLate;
+        }
+        //checking in
         public UserLesson(int fkusers, int fklessons)
         {
             Id = idcounter;
@@ -33,6 +48,7 @@ namespace StudinAPI.Model
             Fklessons = fklessons;
             Checkedout = false;
             MinutesStayed = null;
+            MinutesLate = null;
         }
 
         public UserLesson() { }
@@ -64,6 +80,11 @@ namespace StudinAPI.Model
         {
             get { return _minutesStayed; }
             set { _minutesStayed = value; }
+        }
+        public int? MinutesLate
+        {
+            get { return _minutesLate; }
+            set { _minutesLate = value; }
         }
 
 

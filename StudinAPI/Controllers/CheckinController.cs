@@ -96,6 +96,13 @@ namespace StudinAPI.Controllers
 
 
                 List<Lesson> lessonlist = new List<Lesson>();
+
+                int graceperiod = 10;
+                int lessonlength = 45;
+
+                int lateToLessonId = 0;
+                int lateToLessonMinutes = 0;
+
                 int earlyCheckoutLessonId = 0;
                 int minutesStayed = 0;
                 foreach(Lesson obj in query)
@@ -103,18 +110,29 @@ namespace StudinAPI.Controllers
                     //check if lesson is same date month and year as checkin
                     if (obj.Lessonstart.Date == checkin.CheckinTime.Date && obj.Lessonstart.Year == checkin.CheckinTime.Year && obj.Lessonstart.Month==checkin.CheckinTime.Month)
                     {
+                        
                         if (checkin.CheckingIn)
                         {
-                            //check if lesson is same or greater hour and minute than checkin
-                            if ((obj.Lessonstart.Hour >= checkin.CheckinTime.Hour && obj.Lessonstart.Minute >= checkin.CheckinTime.Minute)||obj.Lessonstart.Hour>checkin.CheckinTime.Hour)
-                            {
-                                lessonlist.Add(obj);
+                            DateTime comparetime = obj.Lessonstart.AddMinutes(lessonlength);
+                            if ((comparetime.Hour >= checkin.CheckinTime.Hour && comparetime.Minute >= checkin.CheckinTime.Minute) || comparetime.Hour > checkin.CheckinTime.Hour) 
+                            { 
+                                //check if lesson is same or greater hour and minute than checkin
+                                if ((obj.Lessonstart.Hour >= checkin.CheckinTime.Hour && obj.Lessonstart.Minute >= checkin.CheckinTime.Minute) || obj.Lessonstart.Hour > checkin.CheckinTime.Hour)
+                                {
+                                    lessonlist.Add(obj);
+                                }
+                                else
+                                {
+                                    lessonlist.Add(obj);
+                                    lateToLessonId = obj.Id;
+                                    lateToLessonMinutes = new DateTime(checkin.CheckinTime.Ticks - obj.Lessonstart.Ticks).Minute;
+
+                                }
                             }
                         }
                         else
                         {
-                            int graceperiod = 10;
-                            int lessonlength = 45;
+                            
                             
                             DateTime comparetime = obj.Lessonstart.AddMinutes((lessonlength-graceperiod));
 
@@ -144,7 +162,11 @@ namespace StudinAPI.Controllers
                         if (lesson.Fkcourses == lessonlist[0].Fkcourses)
                         {
                             var userlessonquery = _context.UserLesson.Where(x => x.Fkusers == studentId).Where(y => y.Fklessons == lesson.Id).FirstOrDefault();
-                            if (userlessonquery == null) _context.UserLesson.Add(new UserLesson(studentId, lesson.Id));
+                            if (userlessonquery == null)
+                            {
+                                if (lateToLessonId == lesson.Id) _context.UserLesson.Add(new UserLesson(studentId, lesson.Id, lateToLessonMinutes));
+                                else _context.UserLesson.Add(new UserLesson(studentId, lesson.Id));
+                            }
                         }
                     }
                 }
