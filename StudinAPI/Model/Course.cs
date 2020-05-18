@@ -10,10 +10,12 @@ namespace StudinAPI.Model
         private int _id;
         private string _name;
         private int _fkusers;
+        private static int idcounter = 1;
 
-        public Course(int id, string name, int fkusers)
+        public Course(string name, int fkusers)
         {
-            Id = id;
+            Id = idcounter;
+            idcounter++;
             Name = name;
             Fkusers = fkusers;
         }

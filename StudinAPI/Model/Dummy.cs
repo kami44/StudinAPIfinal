@@ -5,31 +5,28 @@ using System.Threading.Tasks;
 
 namespace StudinAPI.Model
 {
-    public class Classroom
+    public class Dummy
     {
         private int _id;
-        private string _name;
+        private int _amount;
         private static int idcounter = 1;
 
-        public Classroom(string name)
+        public Dummy(int amount)
         {
-            Id = idcounter;
+            _id = idcounter;
             idcounter++;
-            Name = name;
+            _amount = amount;
         }
-
-        public Classroom() { }
-
+        public Dummy(){}
         public int Id
         {
             get { return _id; }
             set { _id = value; }
         }
-
-        public string Name
+        public int Amount
         {
-            get { return _name; }
-            set { _name = value; }
+            get { return _amount; }
+            set { _amount = value; }
         }
     }
 }

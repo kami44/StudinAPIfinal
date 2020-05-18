@@ -11,6 +11,7 @@ namespace StudinAPI.Model
         public DBContext(DbContextOptions<DBContext> options)
            : base(options)
         {
+           
         }
 
         public DbSet<User> User { get; set; }
@@ -26,5 +27,7 @@ namespace StudinAPI.Model
         public DbSet<UserLesson> UserLesson { get; set; }
 
         public DbSet<Checkin> Checkin { get; set; }
+
+        public DbSet<Dummy> Dummy { get; set; }
     }
 }

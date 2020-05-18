@@ -11,10 +11,12 @@ namespace StudinAPI.Model
         private DateTime _lessonstart;
         private int _fkcourses;
         private int _fkclassrooms;
+        private static int idcounter = 1;
 
-        public Lesson(int id, DateTime lessonstart, int fkcourses, int fkclassrooms)
+        public Lesson(DateTime lessonstart, int fkcourses, int fkclassrooms)
         {
-            Id = id;
+            Id = idcounter;
+            idcounter++;
             Lessonstart = lessonstart;
             Fkcourses = fkcourses;
             Fkclassrooms = fkclassrooms;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +21,7 @@ namespace StudinAPI.Controllers
         public CheckinController(DBContext context)
         {
             _context = context;
+            
         }
 
         // GET: api/Checkin
@@ -79,54 +83,102 @@ namespace StudinAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Checkin>> PostCheckin(Checkin checkin)
         {
-            //Checking In
-            if (checkin.CheckingIn)
+            var studentQuery = _context.User.Where(u => u.Scannerkey == checkin.Scannerkey);
+
+            if (studentQuery.Count() >= 0)
             {
-                var student = _context.User.FromSqlRaw<User>("SELECT * FROM User WHERE Scannerkey = '"+checkin.Scannerkey+"'");
-                User flamingo = new User(11,11,student.ToString(),"","","","","",11,11);
+                int studentId = studentQuery.Select(u => u.Id).FirstOrDefault();
+                var query = _context.Course
+                .Join(_context.UserCourse, x => x.Id, y => y.Fkcourses, (x, y) => new { course = x, usercourse = y })
+                .Join(_context.Lesson, xy => xy.course.Id, z => z.Fkcourses, (xy, z) => new { xy, lesson = z })
+                .Where(k => k.lesson.Fkclassrooms == checkin.Classroom && k.xy.usercourse.Fkusers == studentId)
+                .Select(i=> i.lesson);
 
 
-                if (student != null)
+                List<Lesson> lessonlist = new List<Lesson>();
+                int earlyCheckoutLessonId = 0;
+                int minutesStayed = 0;
+                foreach(Lesson obj in query)
                 {
-                    _context.User.Add(flamingo);
-                    _context.Checkin.Add(checkin);
-                    await _context.SaveChangesAsync();
+                    //check if lesson is same date month and year as checkin
+                    if (obj.Lessonstart.Date == checkin.CheckinTime.Date && obj.Lessonstart.Year == checkin.CheckinTime.Year && obj.Lessonstart.Month==checkin.CheckinTime.Month)
+                    {
+                        if (checkin.CheckingIn)
+                        {
+                            //check if lesson is same or greater hour and minute than checkin
+                            if ((obj.Lessonstart.Hour >= checkin.CheckinTime.Hour && obj.Lessonstart.Minute >= checkin.CheckinTime.Minute)||obj.Lessonstart.Hour>checkin.CheckinTime.Hour)
+                            {
+                                lessonlist.Add(obj);
+                            }
+                        }
+                        else
+                        {
+                            int graceperiod = 10;
+                            int lessonlength = 45;
+                            
+                            DateTime comparetime = obj.Lessonstart.AddMinutes((lessonlength-graceperiod));
 
-                    return CreatedAtAction("GetCheckin", new { id = checkin.Id }, checkin);
+                            if((obj.Lessonstart.Hour <= checkin.CheckinTime.Hour && obj.Lessonstart.Minute <= checkin.CheckinTime.Minute)||obj.Lessonstart.Hour<checkin.CheckinTime.Hour)
+                            {
+                                lessonlist.Add(obj);
+                                if ((comparetime.Hour >= checkin.CheckinTime.Hour && comparetime.Minute >= checkin.CheckinTime.Minute)||comparetime.Hour>checkin.CheckinTime.Hour)
+                                {
+                                    earlyCheckoutLessonId = obj.Id;
+                                    minutesStayed = new DateTime(checkin.CheckinTime.Ticks- obj.Lessonstart.Ticks).Minute;
+                                }
 
-                    //var lesson = _context.Lesson.FromSqlRaw<Lesson>("SELECT l.Id AS lessonid, l.Lessonstart AS lessonstarttime, c.Id AS courseid " +
-                    //    "FROM Lesson l " +
-                    //    "INNER JOIN Course c "+
-                    //    "ON l.Fkcourses = c.Id "+
-                    //    "INNER JOIN Usercourse u "+
-                    //    "ON c.Id = u.Fkcourses "+
-                    //    "WHERE u.Fkusers = '&student.id'"+
-                    //    "AND l.Fkclassrooms = '&checkin.Classroom'"+
-                    //    "");
+                            }
+                            
+                        }
+
+                    }
                 }
+
+                //checking in
+                if (checkin.CheckingIn)
+                {
+                    lessonlist.OrderBy(x => x.Lessonstart.Ticks);
+
+                    foreach (Lesson lesson in lessonlist)
+                    {
+                        if (lesson.Fkcourses == lessonlist[0].Fkcourses)
+                        {
+                            var userlessonquery = _context.UserLesson.Where(x => x.Fkusers == studentId).Where(y => y.Fklessons == lesson.Id).FirstOrDefault();
+                            if (userlessonquery == null) _context.UserLesson.Add(new UserLesson(studentId, lesson.Id));
+                        }
+                    }
+                }
+                //checking out
                 else
                 {
-
-                    return CreatedAtAction("GetCheckin", new { id = checkin.Id }, null);
+                    foreach (Lesson lesson in lessonlist)
+                    {
+                        var userlessonquery = _context.UserLesson.Where(x => x.Fkusers == studentId).Where(x => x.Fklessons == lesson.Id).Where(x => x.Checkedout == false).FirstOrDefault();
+                        if (userlessonquery != null)
+                        {
+                            UserLesson dalesson = _context.UserLesson.Find(userlessonquery.Id);
+                            dalesson.Checkedout = true;
+                            if (earlyCheckoutLessonId == userlessonquery.Id) dalesson.MinutesStayed = minutesStayed;
+                        }   
+                    }
                 }
+
+                    
+
+
+                
+
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetCheckin", new { id = checkin.Id }, checkin);
+
+
             }
-            //Checking Out
             else
             {
 
                 return CreatedAtAction("GetCheckin", new { id = checkin.Id }, null);
             }
-
-
-
-
-
-
-
-
-
-            
-
 
 
         }

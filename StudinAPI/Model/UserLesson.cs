@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,14 +12,27 @@ namespace StudinAPI.Model
         private int _fkusers;
         private int _fklessons;
         private bool _checkedout;
+        private int? _minutesStayed;
+        private static int idcounter = 1;
 
 
-        public UserLesson(int id, int fkusers, int fklessons, bool checkedout)
+        public UserLesson( int fkusers, int fklessons, bool checkedout)
         {
-            Id = id;
+            Id = idcounter;
+            idcounter++;
             Fkusers = fkusers;
             Fklessons = fklessons;
             Checkedout = checkedout;
+            MinutesStayed = null;
+        }
+        public UserLesson(int fkusers, int fklessons)
+        {
+            Id = idcounter;
+            idcounter++;
+            Fkusers = fkusers;
+            Fklessons = fklessons;
+            Checkedout = false;
+            MinutesStayed = null;
         }
 
         public UserLesson() { }
@@ -45,6 +59,11 @@ namespace StudinAPI.Model
         {
             get { return _checkedout; }
             set { _checkedout = value; }
+        }
+        public int? MinutesStayed
+        {
+            get { return _minutesStayed; }
+            set { _minutesStayed = value; }
         }
 
 

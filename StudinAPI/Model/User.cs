@@ -17,10 +17,12 @@ namespace StudinAPI.Model
         private string _email;
         private int _phone;
         private int _accesslevel;
+        private static int idcounter = 1;
 
-        public User(int id, int scannerkey, string username, string password, string salt, string firstname, string lastname, string email, int phone, int accesslevel)
+        public User(int scannerkey, string username, string password, string salt, string firstname, string lastname, string email, int phone, int accesslevel)
         {
-            Id = id;
+            Id = idcounter;
+            idcounter++;
             Scannerkey = scannerkey;
             Username = username;
             Password = password;

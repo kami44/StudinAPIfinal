@@ -18,6 +18,16 @@ namespace StudinAPI.Controllers
         public UserController(DBContext context)
         {
             _context = context;
+            if (_context.User.Count() == 0)
+            {
+                _context.User.Add(new User(98, "userteacher", "pass", "salt", "teachername", "last", "email", 98, 2));
+                _context.User.Add(new User(99, "userstudent", "pass", "salt", "studentname", "last", "email", 99, 3));
+                _context.Classrooms.Add(new Classroom("Lokale A"));
+                _context.Course.Add(new Course("Programmering", 1));
+                _context.UserCourse.Add(new UserCourse(2, 1));
+                _context.Lesson.Add(new Lesson(new DateTime(2020, 5, 16, 8, 0, 0), 1, 1));
+                _context.SaveChanges();
+            }
         }
 
         // GET: api/User
