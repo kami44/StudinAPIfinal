@@ -84,7 +84,7 @@ namespace StudinAPI.Controllers
                 Where(x => x.Fkusers == userlessontoadd.Fkusers).
                 Where(x => x.Fklessons == userlessontoadd.Fklessons)
                 .FirstOrDefault();
-            if (query != null) 
+            if (query == null) 
             { 
                 _context.UserLesson.Add(userlessontoadd);
             }
