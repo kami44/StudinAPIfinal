@@ -95,8 +95,14 @@ namespace StudinAPI.Controllers
                 Where(k => k.lesson.Lessonstart.Year == xx.CurrentLessonTime.Year).
                 Where(k => k.lesson.Lessonstart.Month == xx.CurrentLessonTime.Month).
                 Where(k => k.lesson.Lessonstart.Date == xx.CurrentLessonTime.Date).
-                Where(k => (k.lesson.Lessonstart.AddMinutes(45).Hour >= xx.CurrentLessonTime.Hour && k.lesson.Lessonstart.AddMinutes(45).Minute >= xx.CurrentLessonTime.Minute) || k.lesson.Lessonstart.AddMinutes(45).Hour > xx.CurrentLessonTime.Hour).
-                ToList();
+                Where(k => (k.lesson.Lessonstart.AddMinutes(44).Hour >= xx.CurrentLessonTime.Hour && k.lesson.Lessonstart.AddMinutes(44).Minute >= xx.CurrentLessonTime.Minute) || k.lesson.Lessonstart.AddMinutes(44).Hour > xx.CurrentLessonTime.Hour).
+                Select(o=>o).ToList();
+            DateTime miav = new DateTime();
+            foreach(var lol in query)
+            {
+                miav = lol.lesson.Lessonstart;
+            }
+
 
             var culesson = query.FirstOrDefault();
             string lessonstarttime = culesson.lesson.Lessonstart.Hour.ToString() + ":" + culesson.lesson.Lessonstart.Minute.ToString("00");
