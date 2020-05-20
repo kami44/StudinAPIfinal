@@ -12,16 +12,20 @@ namespace StudinAPI.Model
         private string _lessonStart;
         private string _lessonEnd;
         private string _courseName;
+        private string _classRoomName;
 
-        public CurrentCourse(int id, int lessonid, string lessonStart, string lessonEnd, string coursename)
+        public CurrentCourse(int id, int lessonid, string lessonStart, string lessonEnd, string coursename, string classRoomName)
         {
             Id = id;
             LessonId = lessonid;
             LessonStart = lessonStart;
             LessonEnd = lessonEnd;
             CourseName = coursename;
+            ClassRoomName = classRoomName;
             Students = new List<Student>();
+
         }
+
         public CurrentCourse(){}
 
         public int Id
@@ -49,6 +53,11 @@ namespace StudinAPI.Model
         {
             get { return _courseName; }
             set { _courseName = value; }
+        }
+        public string ClassRoomName
+        {
+            get { return _classRoomName; }
+            set { _classRoomName = value; }
         }
         public List<Student> Students { get; set; }
     }
