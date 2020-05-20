@@ -80,7 +80,18 @@ namespace StudinAPI.Controllers
         public async Task<ActionResult<UserLesson>> PostUserLesson(UserLesson userLesson)
         {
             UserLesson userlessontoadd = new UserLesson(userLesson.Fkusers, userLesson.Fklessons, userLesson.Checkedout);
-            _context.UserLesson.Add(userlessontoadd);
+            var query = _context.UserLesson.
+                Where(x => x.Fkusers == userlessontoadd.Fkusers).
+                Where(x => x.Fklessons == userlessontoadd.Fklessons)
+                .FirstOrDefault();
+            if (query != null) 
+            { 
+                _context.UserLesson.Add(userlessontoadd);
+            }
+            else
+            {
+                _context.Remove(userlessontoadd);
+            }
             await _context.SaveChangesAsync();
 
             //return CreatedAtAction("GetUserLesson", new { id = userLesson.Id }, userLesson);
