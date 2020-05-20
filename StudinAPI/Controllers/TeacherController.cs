@@ -97,7 +97,7 @@ namespace StudinAPI.Controllers
 
             var courseLesson = query.FirstOrDefault();
 
-            CurrentCourse course = new CurrentCourse(courseLesson.queryCourse.Id, courseLesson.queryLesson.Id, courseLesson.queryCourse.Name);
+            CurrentCourse course = new CurrentCourse(courseLesson.queryCourse.Id, courseLesson.queryLesson.Id, courseLesson.queryLesson.Lessonstart, courseLesson.queryCourse.Name);
             Teacher teacher = new Teacher(xx.TeacherId, userTeacher.Firstname, userTeacher.Lastname, course);
 
             List<User> queryStudentList = _context.UserCourse.
