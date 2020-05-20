@@ -108,7 +108,7 @@ namespace StudinAPI.Controllers
             
             foreach(var student in queryStudentList)
             {
-                var lolquery = queryStudentAttendancy.Where(x => x.Fkusers == student.Id && x.Fklessons == courseLesson.queryLesson.Id).FirstOrDefault();
+                var lolquery = queryStudentAttendancy.Where(x => x.Fkusers == student.Id).FirstOrDefault();
                 bool attendancy = lolquery!=null ? true : false;
                 teacher.CurrentCourse.Students.Add(new Student(student.Id, student.Firstname, student.Lastname, attendancy));
             }

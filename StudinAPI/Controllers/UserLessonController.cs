@@ -79,7 +79,8 @@ namespace StudinAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<UserLesson>> PostUserLesson(UserLesson userLesson)
         {
-            _context.UserLesson.Add(userLesson);
+            UserLesson userlessontoadd = new UserLesson(userLesson.Fkusers, userLesson.Fklessons, userLesson.Checkedout);
+            _context.UserLesson.Add(userlessontoadd);
             await _context.SaveChangesAsync();
 
             //return CreatedAtAction("GetUserLesson", new { id = userLesson.Id }, userLesson);
