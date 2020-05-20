@@ -31,5 +31,7 @@ namespace StudinAPI.Model
         public DbSet<Dummy> Dummy { get; set; }
 
         public DbSet<StudentClass> StudentClass { get; set; }
+        
+        public DbSet<Teacher> Teacher { get; set; }
     }
 }

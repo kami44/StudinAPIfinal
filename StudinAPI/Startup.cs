@@ -30,7 +30,6 @@ namespace StudinAPI
             services.AddDbContext<DBContext>(opt =>
                opt.UseInMemoryDatabase("ModelList"));
             services.AddControllers();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +49,10 @@ namespace StudinAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+            app.UseCors(options =>
+            {
+                options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             });
         }
     }
