@@ -9,14 +9,16 @@ namespace StudinAPI.Model
     {
         private int _id;
         private int _lessonId;
-        private DateTime _lessonStart;
+        private string _lessonStart;
+        private string _lessonEnd;
         private string _courseName;
 
-        public CurrentCourse(int id, int lessonid, DateTime lessonStart, string coursename)
+        public CurrentCourse(int id, int lessonid, string lessonStart, string lessonEnd, string coursename)
         {
             Id = id;
             LessonId = lessonid;
             LessonStart = lessonStart;
+            LessonEnd = lessonEnd;
             CourseName = coursename;
             Students = new List<Student>();
         }
@@ -33,10 +35,15 @@ namespace StudinAPI.Model
             set { _lessonId = value; }
 
         }
-        public DateTime LessonStart
+        public string LessonStart
         {
             get { return _lessonStart; }
             set { _lessonStart = value; }
+        }
+        public string LessonEnd
+        {
+            get { return _lessonEnd; }
+            set { _lessonEnd = value; }
         }
         public string CourseName 
         {

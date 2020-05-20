@@ -96,8 +96,11 @@ namespace StudinAPI.Controllers
                 Select(o => o).ToList();
 
             var courseLesson = query.FirstOrDefault();
+            string lessonstarttime = courseLesson.queryLesson.Lessonstart.Hour.ToString() + ":" + courseLesson.queryLesson.Lessonstart.Minute.ToString();
+            string lessonendtime = courseLesson.queryLesson.Lessonstart.AddMinutes(45).Hour.ToString() + ":" + courseLesson.queryLesson.Lessonstart.AddMinutes(45).Minute.ToString();
 
-            CurrentCourse course = new CurrentCourse(courseLesson.queryCourse.Id, courseLesson.queryLesson.Id, courseLesson.queryLesson.Lessonstart, courseLesson.queryCourse.Name);
+
+            CurrentCourse course = new CurrentCourse(courseLesson.queryCourse.Id, courseLesson.queryLesson.Id, lessonstarttime, lessonendtime, courseLesson.queryCourse.Name);
             Teacher teacher = new Teacher(xx.TeacherId, userTeacher.Firstname, userTeacher.Lastname, course);
 
             List<User> queryStudentList = _context.UserCourse.
